@@ -32,7 +32,7 @@ dependencies {
 }
 
 greendao {
-    schemaVersion 1001
+    schemaVersion 1004
     daoPackage 'io.github.haohaozaici.greendaoupdate.model.db.dao'
     targetGenDir 'src/main/java'
 }

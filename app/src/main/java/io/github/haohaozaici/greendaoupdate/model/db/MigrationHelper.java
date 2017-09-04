@@ -1,5 +1,17 @@
 package io.github.haohaozaici.greendaoupdate.model.db;
 
+import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.greenrobot.greendao.AbstractDao;
+import org.greenrobot.greendao.database.Database;
+import org.greenrobot.greendao.internal.DaoConfig;
+
 /**
  * Created by haohao on 2017/9/1.
  */
@@ -11,7 +23,7 @@ public class MigrationHelper {
    * @param db
    * @param daoClasses 一系列dao.class
    */
-  public static void migrate(SQLiteDatabase db, Class<? extends AbstractDao<?, ?>>... daoClasses) {
+  public static void migrate(Database db, Class<? extends AbstractDao<?, ?>>... daoClasses) {
     //1 新建临时表
     generateTempTables(db, daoClasses);
     //2 创建新表
@@ -26,7 +38,7 @@ public class MigrationHelper {
    * @param db
    * @param daoClasses
    */
-  private static void generateTempTables(SQLiteDatabase db, Class<? extends AbstractDao<?, ?>>... daoClasses) {
+  private static void generateTempTables(Database db, Class<? extends AbstractDao<?, ?>>... daoClasses) {
     //方法2
     for (int i=0;i<daoClasses.length;i++){
       DaoConfig daoConfig = new DaoConfig(db,daoClasses[i]);
@@ -49,7 +61,7 @@ public class MigrationHelper {
    * @param db
    * @param tableName
    */
-  private static Boolean checkTable(SQLiteDatabase db,String  tableName){
+  private static Boolean checkTable(Database db,String  tableName){
     StringBuilder query = new StringBuilder();
     query.append("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='").append(tableName).append("'");
     Cursor c = db.rawQuery(query.toString(), null);
@@ -69,7 +81,7 @@ public class MigrationHelper {
    * @param ifExists
    * @param daoClasses
    */
-  private static void dropAllTables(SQLiteDatabase db, boolean ifExists, @NonNull Class<? extends AbstractDao<?, ?>>... daoClasses) {
+  private static void dropAllTables(Database db, boolean ifExists, @NonNull Class<? extends AbstractDao<?, ?>>... daoClasses) {
     reflectMethod(db, "dropTable", ifExists, daoClasses);
   }
 
@@ -79,7 +91,7 @@ public class MigrationHelper {
    * @param ifNotExists
    * @param daoClasses
    */
-  private static void createAllTables(SQLiteDatabase db, boolean ifNotExists, @NonNull Class<? extends AbstractDao<?, ?>>... daoClasses) {
+  private static void createAllTables(Database db, boolean ifNotExists, @NonNull Class<? extends AbstractDao<?, ?>>... daoClasses) {
     reflectMethod(db, "createTable", ifNotExists, daoClasses);
   }
 
@@ -87,14 +99,14 @@ public class MigrationHelper {
    * 创建根删除都在NoteDao声明了，可以直接拿过来用
    * dao class already define the sql exec method, so just invoke it
    */
-  private static void reflectMethod(SQLiteDatabase db, String methodName, boolean isExists, @NonNull Class<? extends AbstractDao<?, ?>>... daoClasses) {
+  private static void reflectMethod(Database db, String methodName, boolean isExists, @NonNull Class<? extends AbstractDao<?, ?>>... daoClasses) {
     if (daoClasses.length < 1) {
       return;
     }
     try {
       for (Class cls : daoClasses) {
         //根据方法名，找到声明的方法
-        Method method = cls.getDeclaredMethod(methodName, SQLiteDatabase.class, boolean.class);
+        Method method = cls.getDeclaredMethod(methodName, Database.class, boolean.class);
         method.invoke(null, db, isExists);
       }
     } catch (NoSuchMethodException e) {
@@ -111,7 +123,7 @@ public class MigrationHelper {
    * @param db
    * @param daoClasses
    */
-  private static void restoreData(SQLiteDatabase db, Class<? extends AbstractDao<?, ?>>... daoClasses) {
+  private static void restoreData(Database db, Class<? extends AbstractDao<?, ?>>... daoClasses) {
     for (int i = 0; i < daoClasses.length; i++) {
       DaoConfig daoConfig = new DaoConfig(db, daoClasses[i]);
       String tableName = daoConfig.tablename;
@@ -145,7 +157,7 @@ public class MigrationHelper {
     }
   }
 
-  private static List<String> getColumns(SQLiteDatabase db, String tableName) {
+  private static List<String> getColumns(Database db, String tableName) {
     List<String> columns = null;
     Cursor cursor = null;
     try {

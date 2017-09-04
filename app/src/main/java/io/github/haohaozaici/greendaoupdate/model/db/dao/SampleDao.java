@@ -30,6 +30,7 @@ public class SampleDao extends AbstractDao<Sample, Long> {
         public final static Property Batch_no = new Property(3, String.class, "batch_no", false, "BATCH_NO");
         public final static Property Details = new Property(4, String.class, "details", false, "DETAILS");
         public final static Property Test1 = new Property(5, String.class, "test1", false, "TEST1");
+        public final static Property Test2 = new Property(6, String.class, "test2", false, "TEST2");
     }
 
 
@@ -50,7 +51,8 @@ public class SampleDao extends AbstractDao<Sample, Long> {
                 "\"USER_ID\" TEXT NOT NULL ," + // 2: user_id
                 "\"BATCH_NO\" TEXT NOT NULL ," + // 3: batch_no
                 "\"DETAILS\" TEXT NOT NULL ," + // 4: details
-                "\"TEST1\" TEXT);"); // 5: test1
+                "\"TEST1\" TEXT," + // 5: test1
+                "\"TEST2\" TEXT);"); // 6: test2
     }
 
     /** Drops the underlying database table. */
@@ -76,6 +78,11 @@ public class SampleDao extends AbstractDao<Sample, Long> {
         if (test1 != null) {
             stmt.bindString(6, test1);
         }
+ 
+        String test2 = entity.getTest2();
+        if (test2 != null) {
+            stmt.bindString(7, test2);
+        }
     }
 
     @Override
@@ -95,6 +102,11 @@ public class SampleDao extends AbstractDao<Sample, Long> {
         if (test1 != null) {
             stmt.bindString(6, test1);
         }
+ 
+        String test2 = entity.getTest2();
+        if (test2 != null) {
+            stmt.bindString(7, test2);
+        }
     }
 
     @Override
@@ -110,7 +122,8 @@ public class SampleDao extends AbstractDao<Sample, Long> {
             cursor.getString(offset + 2), // user_id
             cursor.getString(offset + 3), // batch_no
             cursor.getString(offset + 4), // details
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // test1
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // test1
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // test2
         );
         return entity;
     }
@@ -123,6 +136,7 @@ public class SampleDao extends AbstractDao<Sample, Long> {
         entity.setBatch_no(cursor.getString(offset + 3));
         entity.setDetails(cursor.getString(offset + 4));
         entity.setTest1(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setTest2(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
      }
     
     @Override

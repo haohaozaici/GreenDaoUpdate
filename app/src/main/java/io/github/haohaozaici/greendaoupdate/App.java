@@ -1,6 +1,7 @@
 package io.github.haohaozaici.greendaoupdate;
 
 import android.app.Application;
+import io.github.haohaozaici.greendaoupdate.model.db.ReleaseOpenHelper;
 import io.github.haohaozaici.greendaoupdate.model.db.dao.DaoMaster;
 import io.github.haohaozaici.greendaoupdate.model.db.dao.DaoMaster.DevOpenHelper;
 import io.github.haohaozaici.greendaoupdate.model.db.dao.DaoSession;
@@ -15,14 +16,21 @@ public class App extends Application {
   public static final boolean ENCRYPTED = false;
 
   private static DaoSession daoSession;
+  Database db;
 
   @Override
   public void onCreate() {
     super.onCreate();
+//    if (BuildConfig.DEBUG) {
+//      DevOpenHelper helper = new DevOpenHelper(this,
+//          ENCRYPTED ? "haohao-db-encrypted" : "haohao-db");
+//      db = ENCRYPTED ? helper.getEncryptedWritableDb("super-secret") : helper.getWritableDb();
+//    } else {
+      ReleaseOpenHelper helper = new ReleaseOpenHelper(this,
+          ENCRYPTED ? "haohao-db-encrypted" : "haohao-db");
+      db = ENCRYPTED ? helper.getEncryptedWritableDb("super-secret") : helper.getWritableDb();
+//    }
 
-    DevOpenHelper helper = new DevOpenHelper(this, ENCRYPTED ? "haohao-db-encrypted" : "haohao-db");
-    Database db =
-        ENCRYPTED ? helper.getEncryptedWritableDb("super-secret") : helper.getWritableDb();
     daoSession = new DaoMaster(db).newSession();
 
   }

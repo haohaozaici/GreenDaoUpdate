@@ -26,16 +26,19 @@ public class Sample {
   private String details;   //结算信息  json
 
   private String test1;   //增加字段1
+  private String test2;   //增加字段2
 
-  @Generated(hash = 817850391)
+  @Generated(hash = 1501933952)
 public Sample(Long id, @NotNull String date, @NotNull String user_id,
-        @NotNull String batch_no, @NotNull String details, String test1) {
+        @NotNull String batch_no, @NotNull String details, String test1,
+        String test2) {
     this.id = id;
     this.date = date;
     this.user_id = user_id;
     this.batch_no = batch_no;
     this.details = details;
     this.test1 = test1;
+    this.test2 = test2;
 }
 
 @Generated(hash = 976859954)
@@ -89,6 +92,15 @@ public String getTest1() {
 public void setTest1(String test1) {
     this.test1 = test1;
 }
+
+public String getTest2() {
+    return this.test2;
+}
+
+public void setTest2(String test2) {
+    this.test2 = test2;
+}
+
 
   
 
